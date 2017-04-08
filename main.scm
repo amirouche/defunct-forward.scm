@@ -36,7 +36,7 @@
                  pieces:")
              (ul (li "Model is the data. In forward.scm there is single 
                       immutable model datastructure that is built out of
-                      lists (more likely association lists). It's a global
+                      lists (more likely association lists). It is not a global
                       or fluid per se, it's passed around and through the
                       magic of closures (you do no need to understand what
                       closures are to use forward.scm)")
