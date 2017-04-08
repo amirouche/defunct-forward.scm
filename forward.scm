@@ -84,6 +84,19 @@
 (define (document-query-selector selector)
   (js-invoke %document "querySelector" selector))
 
+(define (document-location-pathname)
+  (js-ref (js-ref %document "location") "pathname"))
+
+;; history API
+
+(define %history (js-eval "history"))
+
+(define (history-append url)
+  (js-invoke %history "pushState" '() "" url))
+
+(define (on-pop-state proc)
+  (js-set! %window "onpopstate" (js-closure proc)))
+
 ;;; snabbdom bindings
 
 (define %window (js-eval "window"))
