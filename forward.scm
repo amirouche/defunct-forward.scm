@@ -162,7 +162,7 @@
                   (alist->js-obj '())
                   (map sxml->h (flatten (cdr element))))))))))
 
-(define (mount container init view)
+(define (create-app container init view)
   ;; FIXME: docstring
   (let ((model (init)))  ;; init model
     ;; create a procedure that allows to create new green threads
@@ -180,6 +180,7 @@
                        (let ((sxml (view model make-controller)))
                          (set! container (patch container (sxml->h sxml)))))))
       (render)
+      ;; change procedure allows to sneak into the app closure
       (lambda (proc)
         (set! model (proc state)) ;; set new model
         (render))))) ;; render the new model

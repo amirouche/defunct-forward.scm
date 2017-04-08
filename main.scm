@@ -100,4 +100,4 @@
     (+ 1 model)))"))))
 
 
-(mount container init view)
+(create-app container init view)
