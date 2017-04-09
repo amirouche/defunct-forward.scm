@@ -6,3 +6,4 @@
 *.scm#*
 .#*.scm
 *~
+__pycache__/

@@ -87,15 +87,20 @@
 (define (document-location-pathname)
   (js-ref (js-ref %document "location") "pathname"))
 
+(define (document-dispatch-event name)
+  (let ((event (js-invoke %document "createEvent" "Event")))
+    (js-invoke event "initEvent" name #t #t)
+    (js-invoke %document "dispatchEvent" event)))
+
+(define (document-add-event-listener name proc)
+  (js-invoke %document "addEventListener" name (js-closure proc) #f))
+
 ;; history API
 
 (define %history (js-eval "history"))
 
 (define (history-append url)
-  (js-invoke %history "pushState" '() "" url))
-
-(define (on-pop-state proc)
-  (js-set! %window "onpopstate" (js-closure proc)))
+  (js-invoke %history "pushState" (alist->js-obj '()) "" url))
 
 ;;; snabbdom bindings
 
@@ -175,7 +180,8 @@
                   (alist->js-obj '())
                   (map sxml->h (flatten (cdr element))))))))))
 
-(define (create-app container init view)
+
+(define (%create-app container init view)
   ;; FIXME: docstring
   (let ((model (init)))  ;; init model
     ;; create a procedure that allows to create new green threads
@@ -186,14 +192,90 @@
                                 (js-closure
                                  (lambda args
                                    (let ((new (apply (proc model spawn) args)))
-                                     (set! model new)
-                                     (render))))))
+                                     (when new
+                                       (set! model new)
+                                       (render)))))))
              ;; rendering pipeline
              (render (lambda ()
                        (let ((sxml (view model make-controller)))
                          (set! container (patch container (sxml->h sxml)))))))
-      (render)
+
       ;; change procedure allows to sneak into the app closure
       (lambda (proc)
-        (set! model (proc state)) ;; set new model
-        (render))))) ;; render the new model
+        (let ((new (proc model spawn)))
+          (when new
+            (set! model new)
+            (render))))))) ;; render the new model
+
+(define (create-app container init view)
+  (let ((change (%create-app container init view)))
+    (change (lambda (model spawn) model))
+    change)) ;; trigger a render
+
+;; router
+
+(define (make-route route)
+  (cons (cdr (string-split (car route) "/")) (cdr route)))
+
+(define (component-match route url)
+  (cond
+   ((string-prefix? ":" route)
+    (values #t (cons (substring route 0 (string-length route)) url)))
+   ((equal? route url) (values #t '()))
+   (else (values #f '()))))
+
+(define (route-match route url)
+  (let loop ((route route)
+             (url url)
+             (out '()))
+    (cond
+     ((and (null? route) (null? url)) (values #t out))
+     ((or (null? route) (null? url)) (values #f '()))
+     (else (call-with-values (lambda () (component-match (car route) (car url)))
+             (lambda (match? params)
+               (if match?
+                   (loop (cdr route) (cdr url) (append params out))
+                   (values #f '()))))))))
+
+(define (change-unknown-route model)
+  (set* (rm model 'location) 'location 'route 'unknown))
+
+(define (change-location model route params)
+  (set* (set* model 'location 'route route) 'location 'params params))
+
+(define (resolve model spawn)
+  (let ((url (car (make-route (cons (document-location-pathname) #f)))))
+    (let loop ((routes (ref model '%routes)))
+      (if (null? routes)
+          (change-unknown-route model)
+          (call-with-values (lambda () (route-match (caar routes) url))
+            (lambda (match? params)
+              (if match?
+                  ((cdar routes) (change-location model (caar routes) params) spawn)
+                  (loop (cdr routes)))))))))
+
+(define (create-app* container init view routes) ;; create-app with router
+  (let ((change (%create-app container init view))
+        (routes (map make-route routes)))
+    ;; set the routes in the model
+    (change (lambda (model spawn) (set model '%routes routes)))
+    ;; resolve when back button is clicked
+    (document-add-event-listener "onpopstate" (lambda (event) (change resolve)))
+    ;; initial resolution
+    (change resolve)
+    ;; return the change
+    change))
+
+(define (link-clicked url)
+  (lambda (model spawn)
+    (lambda (event)
+      (event-prevent-default event)
+      (history-append url)
+      (resolve model spawn))))
+
+(define (link mc url children)
+  "Create a link to URL with CHILDREN as children"
+  `(a (@ (href . ,url) (on . ((click . ,(mc (link-clicked url))))))
+      ,children))
+
+(define (identity-controller model spawn) model)

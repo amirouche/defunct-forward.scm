@@ -60,10 +60,10 @@
              (h2 "Widgets")
              (p "FIXME")
              (h2 "Reference API")
-             (h3 "(mount container init view)")
+             (h3 "(create-app container init view)")
              (p "forward.js comes with various scheme helpers and javascript bindings,
                  but the very core of it, the thing that is really revolutionary is
-                 the mount procedure.")
+                 the create-app procedure.")
              (p "It takes a CONTAINER as first argument, this should be a DOM node that
                  will be replaced by the what return the VIEW procedure.")
              (p "The second argument is INIT a procedure that must return the initial
