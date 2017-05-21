@@ -6,9 +6,7 @@ body {
 }
 
 #root {
-    display: flex;
-    justify-content: center;
-    padding: 30px;
+    padding: 15px;
 }
 
 #container {
@@ -50,4 +48,24 @@ pre {
 ul li {
     margin-bottom: 1em;
     line-height: 1.6em;
+}
+
+#modal {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: hsla(0, 0%, 0%, 0.7);
+    width: 100%;
+    height: 100%;
+}
+
+#modal-body {
+    background: black;
+    border: 1px solid gray;
+    box-shadow: 1px 1px 1px black;
+    width: 500px;
+    height: 300px;
+    margin: auto;
+    margin-top: 50px;
+    padding: 15px;
 }
