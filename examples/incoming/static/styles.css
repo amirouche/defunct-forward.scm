@@ -1,0 +1,99 @@
+/* * {
+   border: 1px solid hsla(0, 80%, 50%, 0.1);
+   } */
+
+body {
+  background: url('bg.jpeg') fixed;
+  background-size: cover;
+  color: white;
+  font-family: sans;
+}
+
+#inbox, #root {
+  margin: 15px auto;
+  max-width: 900px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0px;
+}
+
+.box {
+  padding: 15px;
+  background: hsla(0, 0%, 0%, 0.5);
+  box-shadow: 0px 0px 15px hsla(0, 0%, 0%, 0.9);
+  border: 1px solid hsla(0, 0%, 100%, 0.2);
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  border-right: 1px solid hsla(0, 0%, 100%, 0.1);
+  border-radius: 3px;
+}
+
+#login {
+  margin-top: 100px;
+}
+
+#login > h2 {
+  margin: 15px 0px;
+}
+
+input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  background: hsla(0, 0%, 0%, 0.3);
+  color: white;
+  border: 0px solid white;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+  padding: 5px;
+  transition: all 0.5s ease-out;
+
+}
+
+input[type="text"]:focus {
+  border-bottom: 1px solid hsla(0, 0%, 100%, 1);
+}
+
+#login > p > button {
+  border: 1px solid hsla(0, 0%, 100%, 0.3);
+  width: 100%;
+  background: hsla(0, 0%, 0%, 0.3);
+  padding: 5px;
+  color: white;
+  transition: all 0.5s ease-out;
+}
+
+#login > p > button:hover {
+  background: hsla(0, 0%, 0%, 0.5);
+  border: 1px solid white;
+}
+
+#inbox > .bundle {
+  padding: 0px 15px;
+  margin: 7px 15px;
+  display: flex;
+}
+
+#inbox > .bundle > * {
+  margin-right: 5px;
+}
+
+#inbox > .bundle > .bundle-name {
+  min-width: 125px;
+}
+
+#inbox > .bundle > .bundle-description {
+  display: flex;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: ;
+}
+
+#inbox > .bundle > .bundle-description > .bundle-new {
+  font-size: 0.8em;
+  font-weight: bold;
+  background: hsla(0, 0%, 100%, 0.1);
+  color: hsla(0, 0%, 100%, 0.8);
+  padding: 5px;
+  margin-right: 15px;
+  border-radius: 1px;
+}

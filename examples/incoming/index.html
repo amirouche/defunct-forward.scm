@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>incoming</title>
+        <link href="static/normalize.css" rel="stylesheet" type="text/css">
+        <link href="static/styles.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div id="root">This website requires javascript</div>
+        <script src="static/snabbdom.js"></script>
+        <script src="static/snabbdom-attributes.js"></script>
+        <script src="static/snabbdom-eventlisteners.js"></script>
+        <script src="static/h.js"></script>
+        <script>
+         h = h.default;
+         patch = snabbdom.init([
+             snabbdom_attributes.default,
+             snabbdom_eventlisteners.default
+         ]);
+        </script>
+        <script src="static/biwascheme.js">
+          (load "forward.scm")
+          ;; (load "tests.scm")
+          (load "main.scm")
+        </script>
+    </body>
+</html>
